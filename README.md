@@ -7,8 +7,29 @@
 - `npm install -g typescript` // for global
 - `tsc -v` // check typescript version
 
+## Configuration
+- go into your project
+- `tsc --init` // create tsconfig.json file
+- open your tsconfig file
+  - outside of compilerOptions // where top level options are; those you have to write them yourself 
+    - `"file":  [ "index.ts", "file.ts", "utilities.ts"] ` // all the file that you want typescript to be included in compilation anything else will be ignored
+    - `"include": ["src/ts"]` // only compile the files from src directory delete "file" option; you can use patterns like ["*use.tsc"]
+    - `"exclude": ["src/ts/dontTuch.ts", src/ts/"ignore.ts"]` // don`t compile this files, you can use patterns like ["doteUse/**.*", **.test.ts]; the libraries ts files like node_modules should only be excluded if ASK QUESTIONS
+  - inside of compilerOptions
+    - `"outdir": ["./src/js/compiled"]`// where we going to put the .js compiled files default is just beside .ts files
+    - `"target": "es5"` // javaScript version that yoor compiled files will be can be es6/es2015 or "es2016" ~ "es2022" or "esnext"
+    - `"strict": true` // underneath this option you can find detailed strict options// strict: true activate all of them
+    - `"lib"`
+    - `"modules"`
+    - `"allowJs": true` // add js files to your ts
+    - `"checkJs": true` // checks also .js file for errors
+    - `"noEmitOnError": true`// if there are error in ts don`t compile files
+
 ## Compile TypeScript
 - `tsc file.ts` // create a .js file base on your .ts file
+- `tsc -w file.ts` //  compile in watch mode, checks for errors and changes and display them in terminal
+- `tsc -watch file.ts` //  the same as -w
+- `tsc` compile all files in folder
 
 ## Types
 Variables:
@@ -23,7 +44,8 @@ let names2: Array<string> = ["Mary", "John"];
 let board: string[][] = [["X","O","O"]["O","X","X"]["X","O","X"]];
 let id: number | string = 21;
 let id: number | string = "R21";
-let names1: (string | number)[] = [21, "R21"];
+let arrayUnion: (string | number)[] = [21, "R21"];
+let myTuple: [string, number] = ["R", 21]; // fix length and fix type per tuple index
 ```
 
 Methods:
@@ -121,5 +143,128 @@ function printAge(age: number | string) : void {
     console.log(`You are ${age} years old`);
   }
 
+}
+```
+Objects Literal Types:
+```TypeScript
+let zero: 0 = 0;
+```
+Objects Literal Union Types:
+```TypeScript
+ler choice: yes | no | maybe;
+let DaysOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
+```
+Enums they are very verbose in JS
+```TypeScript
+enum Choice {
+  no, //1
+  yes, //2
+  maybe, //3
+}
+enum Choice { // String Enums
+  no = "No", 
+  yes = "Yes" ,
+  maybe = "Maybe", 
+}
+enum Choice { // Heterogenous Enums
+  no = 0, 
+  yes = 1 ,
+  maybe = "Maybe", 
+}
+```
+Const Enums not so verbose in JS
+```TypeScript
+const enum Choice {
+  no = 2, //2
+  yes, //3
+  maybe, //4
+}
+const enum Choice { // String Enums
+  no = "No", 
+  yes = "Yes" ,
+  maybe = "Maybe", 
+}
+const enum Choice { // Heterogenous Enums
+  no = 0, 
+  yes = 1 ,
+  maybe = "Maybe", 
+}
+```
+Tuples:
+```TypeScript
+let myTuple: [string, number] = ["R", 21]; // fix length and fix type per tuple index
+let color : [number, number, number] = [155, 255, 27];
+type HTTPResponse = [number, string];
+const reponse: HTTPResponse[]: [[200, "OK"],[404, "Not found"]];
+// careful you can push or pop extra elements
+```
+Array Union
+```TypeScript
+let myArray: (number | boolean) = [true, 15, 25, false];
+```
+Interface 
+```TypeScript
+interface Person { // an Interface can be only an Object and can have methods, maine differance between Interface and Types
+  first: string;
+  middle?: string; // "?" not required
+  last: string;
+  born: number;
+  readonly id?: number | string;
+  sayHi: (name: string) => string; // this is a method that return string
+  sayHi2(name: string)?: string; // this also works
+  age(todayyear: number):number; 
+};
+
+const thomas: Person = {
+  first: "Thomas",
+  last: "Hardy",
+  born: 1977,
+  id: "A1234",
+  sayHi: (name = "mate") => {
+    return `Hi ${name}`;
+  };
+  age(year: number = this.born){
+    return new Date().getFullYear() - year;    
+  }
+} 
+```
+
+Interface are partial
+```TypeScript
+interface Dog {
+  breed: string;
+  bark(): string;
+};
+
+interface Dog {
+  name: string;
+};
+
+const ax: Dog = {
+    breed: Dalmatian,
+    name: "Ax",
+    bark() => "woof";
+  }
+} 
+```
+Interface extends multiple interfaces
+```TypeScript
+interface Dog {
+  breed: string;
+  bark(): string;
+};
+interface Dog {
+  name: string;
+};
+
+interface ServiceDog exteds Dog {
+  job: "drug sniffer" | "bomb sniffer" | "guide dog";
+}
+const jack: ServiceDog = {
+    breed: "German Sheppard",
+    name: "Jack",
+    job: "drug sniffer",
+    bark() => "woof",
+  }
 }
 ```
