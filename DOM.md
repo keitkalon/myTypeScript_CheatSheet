@@ -65,13 +65,61 @@ let secret: Any = "Hi there";
 const numChar = (secret as string).length;
 ```
 
-## Other Typescript Dom
+## Small ToDo App in Typescript Dom
 // `e: SubmitedEvent`
 ```TypeScript
-  const form = donument.querySelector("form")!;
-  form.addEventListener("click", submitHandler);
-  function submitHandler(e: SubmitEvent){
+interface Todo {
+    text: string;
+    completed: bollean;
+}
+
+const btn = document.getElemntById("btn")! as HTMLButtonElement;
+const input = document.getElementById("todoinput")! as HTMInputElement;
+const form = donument.querySelector("form")!;
+const list = document.querySelector("todolist")!
+
+const todos: Todo[] = readTodos();
+
+todos.foreEach(createTodo);
+
+function readTodos(): Todo[] {
+    cost todosJON = localStorage.getItem("todos");
+if (todosJSON === null) return [];
+    retun JSON.parse(todosJSON)
+}
+
+function saveTodos(){
+     localStorage.setItem(todos, JSON.stringify(todos));
+}
+
+form.addEventListener("click", submitHandler);
+function submitHandler(e: SubmitEvent){
     e.preventDefault();
-    console.log("Submited!");
-  }
+    const newTodo: Todo = {
+        text: input.value,
+        completed: false;
+    };
+    createTodo(newTodo)
+    todos.push(newTodo);
+
+    saveTodos();
+    input.value = "";    
+}
+
+function createTodo(todo Todo){   
+    const newLI = document.createElement("li");
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox = todo.completed;
+
+    checkbox.addEventListener("change" ()=>{
+       todo.completed = checkbox.checked;
+       saveTodo();
+    })
+
+    newLI.append(todo.text);
+    newLI.append(checkbox);
+    list.append(neLI)
+}
+
 ```
