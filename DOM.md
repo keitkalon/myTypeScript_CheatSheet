@@ -124,11 +124,11 @@ function createTodo(todo Todo){
 
 ```
 ## Genarics in DOM
-// <HTMLButtonElement>
+// `<HTMLButtonElement>`
 ```TypeScript
 //<input id="username" type="text" placeholder="enter your username"/>
 const inputEl = document.querySelector<HTMLInputElement>("#username")!;
-const btn = document.querySelector<<HTMLButtonElement>("btn")!
+const btn = document.querySelector<HTMLButtonElement>("btn")!
 console.dir(inputEll)
 inputEl.value;
 ```
