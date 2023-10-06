@@ -48,7 +48,7 @@ let arrayUnion: (string | number)[] = [21, "R21"];
 let myTuple: [string, number] = ["R", 21]; // fix length and fix type per tuple index
 ```
 
-Methods:
+## Methods:
 ```TypeScript
 function greet(person: string = "stranger", age: number, funny: boolean, timeofday: string): string{
   if(age < 30 && funny)
@@ -80,7 +80,7 @@ function neverEnds(): never {  // for functions that end the program or run fore
 }
 ```
 
-Objects:
+## Objects:
 ```TypeScript
 const coordinates: {latitude: number, longitude: number} = {latitude: 255, longitude: 459};
 
@@ -89,7 +89,7 @@ function printName(person: {first: string; last: strinh}): void  {
 }
 ```
 
-Objects Type Aliases:
+## Objects Type Aliases:
 ```TypeScript
 type Coordinates = {
   readonly latitude: number; // cannot be modified
@@ -109,7 +109,7 @@ function printName(person: Person): void  {
 }
 ```
 
-Objects Intersection Types:
+## Objects Intersection Types:
 ```TypeScript
 type Color = {
   color: string;
@@ -126,7 +126,7 @@ const happyHat: ColorfulHat = {
 }
 ```
 
-Objects Union Types with type narrowing:
+## Objects Union Types with type narrowing:
 ```TypeScript
 function printAge(age: number | string) : void {
   console.log(`You are ${age} years old`);
@@ -145,7 +145,7 @@ function printAge(age: number | string) : void {
 
 }
 ```
-Objects Literal Types:
+## Objects Literal Types:
 ```TypeScript
 let zero: 0 = 0;
 ```
@@ -154,7 +154,7 @@ Objects Literal Union Types:
 ler choice: yes | no | maybe;
 let DaysOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
 ```
-Enums they are very verbose in JS
+## Enums they are very verbose in JS
 ```TypeScript
 enum Choice {
   no, //1
@@ -190,7 +190,7 @@ const enum Choice { // Heterogenous Enums
   maybe = "Maybe", 
 }
 ```
-Tuples:
+## Tuples:
 ```TypeScript
 let myTuple: [string, number] = ["R", 21]; // fix length and fix type per tuple index
 let color : [number, number, number] = [155, 255, 27];
@@ -198,11 +198,11 @@ type HTTPResponse = [number, string];
 const reponse: HTTPResponse[]: [[200, "OK"],[404, "Not found"]];
 // careful you can push or pop extra elements
 ```
-Array Union
+## Array Union
 ```TypeScript
 let myArray: (number | boolean) = [true, 15, 25, false];
 ```
-Interface 
+## Interface 
 ```TypeScript
 interface Person { // an Interface can be only an Object and can have methods, maine differance between Interface and Types
   first: string;
@@ -229,7 +229,7 @@ const thomas: Person = {
 } 
 ```
 
-Interface are partial
+## Interface are partial
 ```TypeScript
 interface Dog {
   breed: string;
@@ -247,7 +247,7 @@ const ax: Dog = {
   }
 } 
 ```
-Interface extends multiple interfaces
+## Interface extends multiple interfaces
 ```TypeScript
 interface Dog {
   breed: string;
@@ -269,7 +269,7 @@ const jack: ServiceDog = {
 }
 ```
 
-Generics
+## Generics
 ```TypeScript
 function identity<T>(item: T): T {
  return item;
@@ -285,7 +285,7 @@ function getRandomElement<T>(list: T[]):T{
 getRandomElement<string>(["Hi", "Hello"])
 ```
 
-Generic in TypeScript for jsx
+## Generic in TypeScript for jsx
 //`<T,>`
 ```TypeScript
 const getRandomElement = <T,>(list: T[]):T => {
@@ -295,7 +295,7 @@ const getRandomElement = <T,>(list: T[]):T => {
 getRandomElement<string>(["Hi", "Hello"])
 ```
 
-Generic for merged Objects
+## Generic for merged Objects
 //`<T,U,V>`
 ```TypeScript
 function merge<T,U>(object1: T, object2: U): T&U{
@@ -307,7 +307,7 @@ function merge<T,U>(object1: T, object2: U): T&U{
 const  carOwner = merge({name: "John"}, {cars: ["Volvo", "Subaru"]});
 ```
 
-Generic for merged Objects with extends
+## Generic for merged Objects with extends
 //`<T extends object,U extends object,V extends object>`
 ```TypeScript
 function merge<T extends object,U extends object>(object1: T, object2: U): T&U{
@@ -319,7 +319,7 @@ function merge<T extends object,U extends object>(object1: T, object2: U): T&U{
 const  carOwner = merge({name: "John"}, {cars: ["Volvo", "Subaru"]});
 ```
 
-Generic Extends
+## Generic Extends
 ```TypeScript
 interface Lengthy {
  length: number;
@@ -329,7 +329,7 @@ function doubleleLength<T extends Lengthyt>(thing: T): number{
 }
 ```
 
-Generic Default
+## Generic Default
 // T = DefaultValue
 ```TypeScript
 function emptyArray<T = number>(thing: T): number{
@@ -337,7 +337,7 @@ function emptyArray<T = number>(thing: T): number{
 }
 ```
 
-Generic in a class
+## Generic in a class
 ```TypeScript
 interface Song {
   title : string;
@@ -356,4 +356,134 @@ class Playlist <T> {
 }
 const myMusicPlaylist = new Playlist<Song>();
 const myVideoPlaylist = new Playlist<Video>();
+```
+
+## Typeof Guards
+//if (typeof  === "") narrowing down the type; usualy with optional type
+```TypeScript
+function triple(value: number| string): number | string{
+   if(typeof value === "string"){
+        //do methods of that class type
+        return value.repeat(3);
+   }
+    return value * 3; 
+}
+```
+
+## Truthiness Guard
+//eliminate falsely value
+```TypeScript
+const printLetters = (word: string : null)=> {
+    if(!word){
+        console.log("No word has been provided");
+    }
+}
+const printLetters = (word?: string)=> {
+    if(word){
+        // Do string stuff
+    }
+}
+```
+
+## Property Guard by in
+//narrowing by include property
+```TypeScript
+interface Movie {
+    title: string,
+    duration: number
+}
+interface TvShow {
+    title: string,
+    episode: number
+    episodeDuration: number
+}
+
+function getDuration(film: Movie | TvShow): number{
+  if("episodeDuration" in media){
+      // Do TvShow methods
+      return film.episode * film.episodeDuration; 
+  }
+    return film.duration;
+}
+```
+## Property Guard by as
+```TypeScript
+function makeNoise(pet: Dog | Cat): bool{
+    return (pet as Cat).meow !== undefined
+}
+```
+
+# Instanceof Guard
+//narrowing by include property
+```TypeScript
+function printFullDate(date: string | Date): void{
+    if(date insatnceof Date){
+        // Do Date methods
+        console.log(date.toUTCString()); 
+    }else{
+        console.log(date);
+    }
+}
+```
+
+# Guard by Predicate with `is` and `as` 
+//returning `pet is Cat`
+```TypeScript
+interface Cat {
+  name: string;
+  numLives: number;
+}
+interface Dog {
+  name: string;
+  bareed: string;
+}
+
+function isCat(pet: Cat | Dog): pet is Cat {  // Guard by Predicate with `is` and `as` 
+    return (pet as Cat).numlives !== undefined
+}
+
+function makeNoise(pet: Dog | Cat): string{
+    if(isCat(pet)){
+      return "Meow";
+    }
+    return "Woof";
+}
+```
+
+# Discriminated unions 
+// adding a property that diferenciate like category or type
+```TypeScript
+interface Rooster {
+  name: string;
+  age: number;
+  weight: number;
+  type: "Rooster";
+  category:"Birds"
+}
+interface Cow {
+  name: string;
+  bareed: string;
+  weight: string;
+  type: "Cow";
+  category:"Mammals"
+}
+
+interface Pig {
+  name: string;
+  bareed: string;
+  weight: string;
+  type: "Pig";
+  category:"Mammals"
+}
+
+type FarmAnimal = Pig | Rooster | Cow;
+
+function printIfFarmAnimalHasFeathers(animal: FarmAnimal){
+    switch(animal.category){
+      case("Bird"):
+        Console.log(`${animal.type} has feathers`)
+      case("Mammals")
+        Console.log(`${animal.type} does not has feathers`)
+    }
+}
 ```
