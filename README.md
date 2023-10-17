@@ -29,7 +29,7 @@
 - `tsc file.ts` // create a .js file base on your .ts file
 - `tsc -outFile common.js f1.ts f2.ts f3.ts` create a .js file base o multiple .ts files
 - `tsc -outFile common.ts f2.ts f3.ts` create a .js file base o multiple .ts files
-- `tsc -w file.ts` //  compile in watch mode, checks for errors and changes and display them in terminal
+- `tsc -w file.ts` //  in watch mode it compile automatically any changes in .ts, also it checks for errors and changes and display them in terminal
 - `tsc -watch file.ts` //  the same as -w
 - `tsc` compile all files in folder
 
