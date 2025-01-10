@@ -1,104 +1,103 @@
 # myTypeScript_CheatSheet
 
 ## Installation
-- install node js
+- Install Node.js
 - `npm -v` // check npm version
-- `npm install tyepescript --save-dev` // only for one project
-- `npm install -g typescript` // for global
-- `tsc -v` // check typescript version
+- `npm install typescript --save-dev` // only for one project
+- `npm install -g typescript` // for global installation
+- `tsc -v` // check TypeScript version
 
 ## Configuration
-- go into your project
+- Navigate to your project directory
 - `tsc --init` // create tsconfig.json file
-- open your tsconfig file
-  - outside of compilerOptions // where top level options are; those you have to write them yourself 
-    - `"file":  [ "index.ts", "file.ts", "utilities.ts"] ` // all the file that you want typescript to be included in compilation anything else will be ignored
-    - `"include": ["src/ts"]` // only compile the files from src directory delete "file" option; you can use patterns like ["*use.tsc"]
-    - `"exclude": ["src/ts/dontTuch.ts", src/ts/"ignore.ts"]` // don`t compile this files, you can use patterns like ["doteUse/**.*", **.test.ts]; the libraries ts files like node_modules should only be excluded if ASK QUESTIONS
-  - inside of compilerOptions
-    - `"outdir": ["./src/js/compiled"]`// where we going to put the .js compiled files default is just beside .ts files
-    - `"target": "es5"` // javaScript version that yoor compiled files will be can be es6/es2015 or "es2016" ~ "es2022" or "esnext"
-    - `"strict": true` // underneath this option you can find detailed strict options// strict: true activate all of them
-    - `"lib"`
-    - `"modules"`
-    - `"allowJs": true` // add js files to your ts
-    - `"checkJs": true` // checks also .js file for errors
-    - `"noEmitOnError": true`// if there are error in ts don`t compile files
+- Open your tsconfig file:
+  - Outside of `compilerOptions`:
+    - "files": [ "index.ts", "file.ts", "utilities.ts" ] // All files to include in compilation; others will be ignored
+    - "include": [ "src/ts" ] // Compile only files from the `src/ts` directory. Delete the `files` option; patterns like "*.use.ts" can be used
+    - "exclude": [ "src/ts/dontTouch.ts", "src/ts/ignore.ts" ] // Files to exclude from compilation; patterns like "dontUse/**/*", "**/*.test.ts" can also be used. Node modules should be excluded unless specified
+  - Inside `compilerOptions`:
+    - "outDir": "./src/js/compiled" // Directory for compiled .js files; default is alongside .ts files
+    - "target": "es5" // JavaScript version for compiled files; can be `es6`, `es2015`, or `es2016` ~ `es2022`, `esnext`
+    - "strict": true // Enables all strict options; options can be configured individually
+    - "lib": [ "es6", "dom" ] // Specify library files to include
+    - "module": "commonjs" // Specify the module system
+    - "allowJs": true // Allow JavaScript files in the project
+    - "checkJs": true // Type-check JavaScript files
+    - "noEmitOnError": true // Prevent emitting files on compilation errors
 
 ## Compile TypeScript
-- `tsc file.ts` // create a .js file base on your .ts file
-- `tsc -outFile common.js f1.ts f2.ts f3.ts` create a .js file base o multiple .ts files
-- `tsc -outFile common.ts f2.ts f3.ts` create a .js file base o multiple .ts files
-- `tsc -w file.ts` //  in watch mode it compile automatically any changes in .ts, also it checks for errors and changes and display them in terminal
-- `tsc -watch file.ts` //  the same as -w
-- `tsc` compile all files in folder
+- `tsc file.ts` // Create a .js file based on your .ts file
+- `tsc -outFile common.js f1.ts f2.ts f3.ts` // Create a single .js file from multiple .ts files
+- `tsc -w file.ts` // Watch mode: compiles automatically on changes
+- `tsc` // Compile all files in the project
 
 ## Types
 Variables:
-```TypeScript
+```typescript
 let myString: string = "Words";
 let myNumber: number = 1;
 let myBoolean: boolean = true;
-let myAny: any = true; //better don`t use it
+let myAny: any = true; // Better to avoid using `any`
 let undefinedString: string;
 let names1: string[] = ["Mary", "John"];
 let names2: Array<string> = ["Mary", "John"];
-let board: string[][] = [["X","O","O"]["O","X","X"]["X","O","X"]];
+let board: string[][] = [["X", "O", "O"], ["O", "X", "X"], ["X", "O", "X"]];
 let id: number | string = 21;
-let id: number | string = "R21";
+id = "R21";
 let arrayUnion: (string | number)[] = [21, "R21"];
-let myTuple: [string, number] = ["R", 21]; // fix length and fix type per tuple index
+let myTuple: [string, number] = ["R", 21]; // Fixed length and type per index
 ```
 
-## Methods:
-```TypeScript
-function greet(person: string = "stranger", age: number, funny: boolean, timeofday: string): string{
-  if(age < 30 && funny)
-    retun `Hi there, ${person}`;
-  else{
-    return `Good ${timeofday}, ${person}`
-  {
+## Methods
+```typescript
+function greet(person: string = "stranger", age: number, funny: boolean, timeOfDay: string): string {
+  if (age < 30 && funny) {
+    return `Hi there, ${person}`;
+  } else {
+    return `Good ${timeOfDay}, ${person}`;
+  }
 }
 
-const sum = (x: number, y: number): number =>{
-return x + y;
-}
+const sum = (x: number, y: number): number => {
+  return x + y;
+};
 
 function randomStringOrNumber(num: number): number | string {
-  if(Math.random() < 0,5){
+  if (Math.random() < 0.5) {
     return num.toString();
   }
   return num;
 }
 
 function print(message: string): void {
-  console.log(message)
+  console.log(message);
 }
 
-function neverEnds(): never {  // for functions that end the program or run forever
-  while(true){
-    //do staff
+function neverEnds(): never { // For functions that end the program or run forever
+  while (true) {
+    // Do stuff
   }
 }
 ```
 
-## Objects:
-```TypeScript
-const coordinates: {latitude: number, longitude: number} = {latitude: 255, longitude: 459};
+## Objects
+```typescript
+const coordinates: { latitude: number, longitude: number } = { latitude: 255, longitude: 459 };
 
-function printName(person: {first: string; last: strinh}): void  {
+function printName(person: { first: string; last: string }): void {
   console.log(`${person.first} ${person.last}`);
 }
 ```
 
-## Objects Type Aliases:
-```TypeScript
+## Object Type Aliases
+```typescript
 type Coordinates = {
-  readonly latitude: number; // cannot be modified
+  readonly latitude: number; // Cannot be modified
   longitude: number;
-  altitude?: number; // "?" not required 
-}
-const coordinates: Coordinates = {latitude: 255, longitude: 459};
+  altitude?: number; // Optional property
+};
+
+const coordinates: Coordinates = { latitude: 255, longitude: 459 };
 
 type Person = {
   first: string;
@@ -106,129 +105,114 @@ type Person = {
   last: string;
   readonly id?: string; "?" not required, and cannot be modified
 }
-function printName(person: Person): void  {
+
+function printName(person: { first: string; last: string }): void {
   console.log(`${person.first} ${person.last}`);
 }
 ```
 
-## Objects Intersection Types:
-```TypeScript
+## Object Intersection Types
+```typescript
 type Color = {
   color: string;
-}
+};
 type Hat = {
   size: string;
-}
-type ColorfulHat = Hat & Color & { model: string};
+};
+type ColorfulHat = Hat & Color & { model: string };
 
 const happyHat: ColorfulHat = {
-  size = medium;
-  color = yellow;
-  model = bubbles;
-}
+  size: "medium",
+  color: "yellow",
+  model: "bubbles",
+};
 ```
 
-## Objects Union Types with type narrowing:
-```TypeScript
-function printAge(age: number | string) : void {
-  console.log(`You are ${age} years old`);
-}
-
-printAge(25);
-printAge("twenty five");
-
-function printAge(age: number | string) : void {
-
-  if(typeof age === "string"){  // type narrowing
+## Objects Union Types with Type Narrowing
+```typescript
+function printAge(age: number | string): void {
+  if (typeof age === "string") { // Type narrowing
     console.log(`You are ${age} years old`);
   } else {
     console.log(`You are ${age} years old`);
   }
-
 }
+
+printAge(25);
+printAge("twenty five");
 ```
-## Objects Literal Types:
-```TypeScript
+
+## Objects Literal Types
+```typescript
 let zero: 0 = 0;
 ```
+
 Objects Literal Union Types:
-```TypeScript
-ler choice: yes | no | maybe;
-let DaysOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
+```typescript
+let choice: "yes" | "no" | "maybe";
+let dayOfWeek: "Monday" | "Tuesday" | "Wednesday" | "Thursday" | "Friday" | "Saturday" | "Sunday";
 ```
-## Enums they are very verbose in JS
-```TypeScript
+
+## Enums
+```typescript
 enum Choice {
-  no, //1
-  yes, //2
-  maybe, //3
+  No, // 0
+  Yes, // 1
+  Maybe, // 2
 }
-enum Choice { // String Enums
-  no = "No", 
-  yes = "Yes" ,
-  maybe = "Maybe", 
+
+enum StringChoice {
+  No = "No",
+  Yes = "Yes",
+  Maybe = "Maybe",
 }
-enum Choice { // Heterogenous Enums
-  no = 0, 
-  yes = 1 ,
-  maybe = "Maybe", 
+
+const enum HeterogenousChoice {
+  No = 0,
+  Yes = 1,
+  Maybe = "Maybe",
 }
-```
-Const Enums not so verbose in JS
-```TypeScript
-const enum Choice {
+
+const enum StartFromTwoChoice {
   no = 2, //2
   yes, //3
   maybe, //4
 }
-const enum Choice { // String Enums
-  no = "No", 
-  yes = "Yes" ,
-  maybe = "Maybe", 
-}
-const enum Choice { // Heterogenous Enums
-  no = 0, 
-  yes = 1 ,
-  maybe = "Maybe", 
-}
 ```
-## Tuples:
-```TypeScript
-let myTuple: [string, number] = ["R", 21]; // fix length and fix type per tuple index
-let color : [number, number, number] = [155, 255, 27];
+
+## Tuples
+```typescript
+let myTuple: [string, number] = ["R", 21];
+let color: [number, number, number] = [155, 255, 27];
+
 type HTTPResponse = [number, string];
 const reponse: HTTPResponse[]: [[200, "OK"],[404, "Not found"]];
-// careful you can push or pop extra elements
 ```
 ## Array Union
 ```TypeScript
 let myArray: (number | boolean) = [true, 15, 25, false];
 ```
-## Interface 
-```TypeScript
-interface Person { // an Interface can be only an Object and can have methods, maine differance between Interface and Types
+
+## Interfaces
+```typescript
+interface Person {
   first: string;
-  middle?: string; // "?" not required
+  middle?: string; // Optional property
   last: string;
   born: number;
-  readonly id?: number | string;
-  sayHi: (name: string) => string; // this is a method that return string
-  sayHi2(name: string)?: string; // this also works
-  age(todayyear: number):number; 
-};
+  readonly id?: string | number; // Optional and immutable
+  sayHi(name: string): string; // Method definition
+}
 
 const thomas: Person = {
   first: "Thomas",
   last: "Hardy",
   born: 1977,
   id: "A1234",
-  sayHi: (name = "mate") => {
+  sayHi: (name: string = "mate") => {
     return `Hi ${name}`;
-  };
-  age(year: number = this.born){
-    return new Date().getFullYear() - year;    
-  }
-} 
+  },
+};
 ```
 
 ## Interface are partial
@@ -272,13 +256,19 @@ const jack: ServiceDog = {
 ```
 
 ## Generics
-```TypeScript
+```typescript
 function identity<T>(item: T): T {
- return item;
+  return item;
 }
 identity<number>(7);
 identity<string>("hello");
+
+function getRandomElement<T>(list: T[]): T {
+  const randIndex = Math.floor(Math.random() * list.length);
+  return list[randIndex];
+}
 ```
+
 ```TypeScript
 function getRandomElement<T>(list: T[]):T{
   const randIndex = Math.floor(Math.ranom() * list.lenght)
@@ -488,4 +478,3 @@ function printIfFarmAnimalHasFeathers(animal: FarmAnimal){
         Console.log(`${animal.type} does not has feathers`)
     }
 }
-```
