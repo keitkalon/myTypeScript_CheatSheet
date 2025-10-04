@@ -1,134 +1,199 @@
 # myTypeScript_CheatSheet DOM
 
-## Setup DOM for typescript
-- install tsc
-- `tsc --init` // create tsconfig.json
-- `mkdir src dist ` // create src & dist folder
-- `touch src/index.ts` // create index.ts 
-- `tsc -v` // check typescript version
+## Setup (DOM + TypeScript)
 
-## Configure Typescript for DOM
-- open your tsconfig file
-- inside of compilerOptions
-    - `"outdir": ["./dist"]`// where we going to put the .js compiled files default is just beside .ts files
-    - `"lib": []` // check this line is commented, to  get all DOM libraries, or you can add  `"lib": ["dom", es2021, "ScriptHost", "WebWorker"]` check what those mean, these files have `*.d.ts` like `lib.dom.d.ts` you can find the also on github.com/microsoft/TypeScript/blob/lib
- - outside of compilerOptions // where top level options are; those you have to write them yourself 
-    - `"include": ["src/ts"]` // only compile the files from src directory delete "file" option; you can use patterns like ["*use.tsc"]
+* Install TypeScript if you haven’t: `npm i -D typescript`
+* `tsc --init` — create `tsconfig.json`
+* `mkdir src dist` — create source & build folders
+* `touch src/index.ts` — create entry TypeScript file
+* `tsc -v` — verify TypeScript version
 
-## Configure DOM for Typescript
-- in src:
-- `touch src/index.html` // create index html and add <script src="dist/index.js"/>
-- `npm init -y` // create package.json in src
-- lowercase "name" value
-- `npm install lite-server` // add server to do live actualization on browser
-- add in package.json at the key "scripts": { "start": "lite-server"} // when you write npm start will run lite-server
-- open another terminal an run `npm start`  
+## Configure TypeScript for the DOM
+
+Open `tsconfig.json` and set (key points only):
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["DOM", "ES2021", "WebWorker"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "noEmitOnError": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*"]
+}
+```
+
+**Notes**
+
+* Use camelCase: **`outDir`** (not `outdir`), and it’s a **string**, not an array.
+* If you omit `lib`, TypeScript picks sensible defaults; adding `"DOM"` ensures browser DOM typings.
+* `include` should match your actual layout; here we compile everything under `src/`.
+
+## Configure a simple dev server (optional)
+
+In the **project root** (not inside `src/`):
+
+```bash
+npm init -y
+npm i -D lite-server
+```
+
+Add scripts to **root** `package.json`:
+
+```json
+{
+  "scripts": {
+    "start": "lite-server",
+    "build": "tsc -w"
+  }
+}
+```
+
+Create an `index.html` in the **project root** (alongside `package.json`):
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TS DOM</title>
+</head>
+<body>
+  <button id="btn">Click me</button>
+  <ul id="todolist"></ul>
+  <form id="todoform">
+    <input id="todoinput" type="text" placeholder="New todo" />
+    <button type="submit">Add</button>
+  </form>
+  <script type="module" src="./dist/index.js"></script>
+</body>
+</html>
+```
+
+Run in two terminals:
+
+* `npm run build` — TypeScript compiler in watch mode
+* `npm start` — serve and auto‑reload
 
 ## Compile TypeScript
-- `in your typescript terminal
-- `tsc -w` //  compile in watch mode, checks for errors and changes and display them in terminal
 
-# DOM TYPESCRIPT
+* In your TS terminal: `tsc -w` — watch & compile, report errors on change
 
-## Maby not Null Assertion Operator `?` 
-// use everywhere where the variable is use
-// JS&TS when you don`t know if will be null or not
-```TypeScript
-const btn = document.getElemntById("btn");
-btn?.addEventListener("click", function () {
-  alert("clicked")
-})
+---
+
+# DOM + TypeScript Patterns
+
+## Optional Chaining `?.` (safe access when maybe null)
+
+```ts
+const btn = document.getElementById("btn");
+btn?.addEventListener("click", () => {
+  alert("clicked");
+});
 ```
 
-## Non-Null Assertion Operator `!`
-// use only once at assertion
-// when you guarantee not to be null, it exist for sure
-```TypeScript
-const btn = document.getElemntById("btn")!;
-btn.addEventListener("click", function () {
-  alert("clicked")
-})
+## Non‑Null Assertion `!` (you guarantee it’s not null)
+
+```ts
+const btn2 = document.getElementById("btn")!; // you are sure it exists
+btn2.addEventListener("click", () => {
+  alert("clicked");
+});
 ```
 
-## Type Assertion Operator
-// if you get by using an elemet type you dont need to use TypeAssert Operator `querySeletor("ul")` or `getElementByTagName`
-//  `as` or less use  `(<HtmlInputElement>input).value`  this dosent work on tsx
-// when you guarantee what the type it will be, you will se all the classes in `lib.dom.d.ts` or in console when you select an element in the bottom at prototype of element
-```TypeScript
-const btn = document.getElemntById("btn")! as HTMLButtonElement;
-const myPicture = document.querySelector("profile-image")! as HTMLImageElement;
-const input = document.getElementById("todoinput")! as HTMInputElement;
+## Type Assertions for DOM elements
+
+```ts
+const btnEl = document.getElementById("btn") as HTMLButtonElement;
+const myPicture = document.querySelector(".profile-image") as HTMLImageElement; // class selector
+const input = document.getElementById("todoinput") as HTMLInputElement;
 
 input.value = "enter your value";
- 
-let secret: Any = "Hi there";
-const numChar = (secret as string).length;
+
+let secret: any = "Hi there"; // `any` is lowercase
+const numChars = (secret as string).length;
 ```
 
-## Small ToDo App in Typescript Dom
-// `e: SubmitedEvent`
-```TypeScript
+---
+
+## Small To‑Do App (TypeScript + DOM)
+
+```ts
 interface Todo {
-    text: string;
-    completed: bollean;
+  text: string;
+  completed: boolean;
 }
 
-const btn = document.getElemntById("btn")! as HTMLButtonElement;
-const input = document.getElementById("todoinput")! as HTMInputElement;
-const form = donument.querySelector("form")!;
-const list = document.querySelector("todolist")!
+const btn = document.getElementById("btn") as HTMLButtonElement | null;
+const input = document.getElementById("todoinput") as HTMLInputElement;
+const form = document.querySelector<HTMLFormElement>("#todoform")!;
+const list = document.querySelector<HTMLUListElement>("#todolist")!;
+
+const STORAGE_KEY = "todos";
 
 const todos: Todo[] = readTodos();
-
-todos.foreEach(createTodo);
+todos.forEach(createTodo);
 
 function readTodos(): Todo[] {
-    cost todosJON = localStorage.getItem("todos");
-if (todosJSON === null) return [];
-    retun JSON.parse(todosJSON)
+  const todosJSON = localStorage.getItem(STORAGE_KEY);
+  if (todosJSON === null) return [];
+  try {
+    return JSON.parse(todosJSON) as Todo[];
+  } catch {
+    return [];
+  }
 }
 
-function saveTodos(){
-     localStorage.setItem(todos, JSON.stringify(todos));
+function saveTodos() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
 }
 
-form.addEventListener("click", submitHandler);
-function submitHandler(e: SubmitEvent){
-    e.preventDefault();
-    const newTodo: Todo = {
-        text: input.value,
-        completed: false;
-    };
-    createTodo(newTodo)
-    todos.push(newTodo);
+form.addEventListener("submit", submitHandler);
 
+function submitHandler(e: SubmitEvent) {
+  e.preventDefault();
+  const text = input.value.trim();
+  if (!text) return;
+  const newTodo: Todo = { text, completed: false };
+  createTodo(newTodo);
+  todos.push(newTodo);
+  saveTodos();
+  input.value = "";
+}
+
+function createTodo(todo: Todo) {
+  const newLI = document.createElement("li");
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = todo.completed;
+
+  checkbox.addEventListener("change", () => {
+    todo.completed = checkbox.checked;
     saveTodos();
-    input.value = "";    
+  });
+
+  newLI.append(todo.text);
+  newLI.append(" ");
+  newLI.append(checkbox);
+  list.append(newLI);
 }
-
-function createTodo(todo Todo){   
-    const newLI = document.createElement("li");
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox = todo.completed;
-
-    checkbox.addEventListener("change" ()=>{
-       todo.completed = checkbox.checked;
-       saveTodo();
-    })
-
-    newLI.append(todo.text);
-    newLI.append(checkbox);
-    list.append(neLI)
-}
-
 ```
-## Genarics in DOM
-// `<HTMLButtonElement>`
-```TypeScript
-//<input id="username" type="text" placeholder="enter your username"/>
+
+---
+
+## Generics with `querySelector`
+
+```ts
+// <input id="username" type="text" placeholder="enter your username" />
 const inputEl = document.querySelector<HTMLInputElement>("#username")!;
-const btn = document.querySelector<HTMLButtonElement>("btn")!
-console.dir(inputEll)
+const btn3 = document.querySelector<HTMLButtonElement>("#btn")!;
+console.dir(inputEl);
 inputEl.value;
 ```
