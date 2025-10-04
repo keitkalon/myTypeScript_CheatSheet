@@ -1,133 +1,159 @@
-## Typeof Guards
-//if (typeof  === "") narrowing down the type; usualy with optional type
-```TypeScript
-function triple(value: number| string): number | string{
-   if(typeof value === "string"){
-        //do methods of that class type
-        return value.repeat(3);
-   }
-    return value * 3; 
+# TypeScript Type Guards Cheat Sheet (Corrected)
+
+## `typeof` Guard
+
+Use when narrowing primitives.
+
+```ts
+function triple(value: number | string): number | string {
+  if (typeof value === "string") {
+    // string methods available here
+    return value.repeat(3);
+  }
+  return value * 3;
 }
 ```
 
 ## Truthiness Guard
-//eliminate falsely value
-```TypeScript
-const printLetters = (word: string : null)=> {
-    if(!word){
-        console.log("No word has been provided");
-    }
-}
-const printLetters = (word?: string)=> {
-    if(word){
-        // Do string stuff
-    }
-}
+
+Eliminate **falsy** values (`""`, `0`, `null`, `undefined`, `NaN`, `false`).
+
+```ts
+const printLetters = (word: string | null) => {
+  if (!word) {
+    console.log("No word has been provided");
+    return;
+  }
+  // `word` is string here
+};
+
+const printLetters2 = (word?: string) => {
+  if (word) {
+    // `word` is string here
+  }
+};
 ```
 
-## Property Guard by in
-//narrowing by include property
-```TypeScript
+## Property Guard with `in`
+
+Narrow using the presence of a property.
+
+```ts
 interface Movie {
-    title: string,
-    duration: number
+  title: string;
+  duration: number;
 }
 interface TvShow {
-    title: string,
-    episode: number
-    episodeDuration: number
+  title: string;
+  episode: number; // episode count
+  episodeDuration: number;
 }
 
-function getDuration(film: Movie | TvShow): number{
-  if("episodeDuration" in media){
-      // Do TvShow methods
-      return film.episode * film.episodeDuration; 
+function getDuration(film: Movie | TvShow): number {
+  if ("episodeDuration" in film) {
+    // TvShow branch
+    return film.episode * film.episodeDuration;
   }
-    return film.duration;
-}
-```
-## Property Guard by as
-```TypeScript
-function makeNoise(pet: Dog | Cat): bool{
-    return (pet as Cat).meow !== undefined
+  // Movie branch
+  return film.duration;
 }
 ```
 
-# Instanceof Guard
-//narrowing by include property
-```TypeScript
-function printFullDate(date: string | Date): void{
-    if(date insatnceof Date){
-        // Do Date methods
-        console.log(date.toUTCString()); 
-    }else{
-        console.log(date);
-    }
+## Narrowing with a Type Assertion (`as`)
+
+Prefer property checks, but if you must assert:
+
+```ts
+interface Cat { meow(): string }
+interface Dog { bark(): string }
+
+function isCatLoose(pet: Dog | Cat): boolean {
+  // Not as safe as an `in` check, but demonstrates `as`
+  return (pet as Cat).meow !== undefined;
 }
 ```
 
-# Guard by Predicate with `is` and `as` 
-//returning `pet is Cat`
-```TypeScript
+## `instanceof` Guard
+
+```ts
+function printFullDate(date: string | Date): void {
+  if (date instanceof Date) {
+    console.log(date.toUTCString());
+  } else {
+    console.log(date);
+  }
+}
+```
+
+## Guard by Predicate (`is`)
+
+Custom type predicate returns `pet is Cat`.
+
+```ts
 interface Cat {
   name: string;
   numLives: number;
 }
 interface Dog {
   name: string;
-  bareed: string;
+  breed: string;
 }
 
-function isCat(pet: Cat | Dog): pet is Cat {  // Guard by Predicate with `is` and `as` 
-    return (pet as Cat).numlives !== undefined
+function isCat(pet: Cat | Dog): pet is Cat {
+  // Either property check or assertion-based check
+  return (pet as Cat).numLives !== undefined;
+  // return "numLives" in pet; // (safer alt.)
 }
 
-function makeNoise(pet: Dog | Cat): string{
-    if(isCat(pet)){
-      return "Meow";
-    }
-    return "Woof";
+function makeNoise(pet: Dog | Cat): string {
+  if (isCat(pet)) {
+    return "Meow";
+  }
+  return "Woof";
 }
 ```
 
-# Discriminated unions 
-// adding a property that diferenciate like category or type
-```TypeScript
+## Discriminated Unions
+
+Add a common literal property (e.g., `type` or `category`) to discriminate.
+
+```ts
 interface Rooster {
   name: string;
   age: number;
   weight: number;
   type: "Rooster";
-  category:"Birds"
+  category: "Bird";
 }
 interface Cow {
   name: string;
-  bareed: string;
-  weight: string;
+  breed: string;
+  weight: number;
   type: "Cow";
-  category:"Mammals"
+  category: "Mammal";
 }
-
 interface Pig {
   name: string;
-  bareed: string;
-  weight: string;
+  breed: string;
+  weight: number;
   type: "Pig";
-  category:"Mammals"
+  category: "Mammal";
 }
 
 type FarmAnimal = Pig | Rooster | Cow;
 
-function printIfFarmAnimalHasFeathers(animal: FarmAnimal){
-    switch(animal.category){
-      case("Bird"):
-        Console.log(`${animal.type} has feathers`);
-      case("Mammals")
-        Console.log(`${animal.type} does not has feathers`);
-      default:
-        //we should never get here
-        //Console.log(`${animal.type} does not have the category set or is unknown `);
-        const shouldNeverGetHere: never = animal; // throwing an error if the type is not in swithch
-    }
+function printIfFarmAnimalHasFeathers(animal: FarmAnimal): void {
+  switch (animal.category) {
+    case "Bird":
+      console.log(`${animal.type} has feathers`);
+      break;
+    case "Mammal":
+      console.log(`${animal.type} does not have feathers`);
+      break;
+    default:
+      // Exhaustiveness check (uncomment to make compiler error on new variants):
+      // const _exhaustive: never = animal;
+      break;
+  }
 }
 ```
