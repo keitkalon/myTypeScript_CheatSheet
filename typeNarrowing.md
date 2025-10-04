@@ -1,4 +1,4 @@
-# TypeScript Type Guards Cheat Sheet (Corrected)
+# TypeScript Type Guards Cheat Sheet
 
 ## `typeof` Guard
 
